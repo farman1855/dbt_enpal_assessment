@@ -58,7 +58,7 @@ This directory contains Jupyter notebooks for exploratory data analysis and busi
 
 1. **Install Python dependencies**:
 ```bash
-cd notebooks
+cd analysis
 pip install -r requirements.txt
 ```
 
