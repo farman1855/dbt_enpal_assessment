@@ -1,0 +1,104 @@
+version: 2
+
+models:
+  - name: stg_stages
+    description: "Stages lookup - 9 stages from Lead Gen to Renewal"
+    columns:
+      - name: stage_id
+        description: "stage id 1-9"
+      - name: stage_name
+        description: "name of the stage"
+  
+  - name: stg_activity_types
+    description: "Activity types - Sales Call 1, Sales Call 2, etc."
+    columns:
+      - name: activity_type_id
+        description: "id"
+      - name: activity_type_name
+        description: "name"
+      - name: activity_type_code
+        description: "code"
+      - name: active
+        description: "is active"
+  
+  - name: stg_deal_changes
+    description: "Deal changes - casts stage_id from varchar to int for joins"
+    columns:
+      - name: deal_id
+        description: "deal id"
+      - name: change_time
+        description: "timestamp"
+      - name: changed_field_key
+        description: "what field changed"
+      - name: new_value
+        description: "new value"
+      - name: stage_id
+        description: "casted stage_id"
+  
+  - name: stg_activity
+    description: "Activities - calls, meetings linked to deals"
+    columns:
+      - name: activity_id
+        description: "activity id"
+      - name: deal_id
+        description: "deal id"
+      - name: activity_type_code
+        description: "type code"
+      - name: assigned_to_user
+        description: "user id"
+      - name: done
+        description: "is done"
+      - name: due_to
+        description: "due date"
+  
+  - name: int_deal_stage_transitions
+    description: "First time each deal enters each stage - uses MIN(change_time)"
+    columns:
+      - name: deal_id
+        description: "deal id"
+      - name: stage_id
+        description: "stage id"
+      - name: first_entry_time
+        description: "when first entered"
+      - name: entry_month
+        description: "month"
+  
+  - name: int_deal_activities
+    description: "Sales Call 1 and Sales Call 2 activities - first occurrence per deal"
+    columns:
+      - name: deal_id
+        description: "deal id"
+      - name: activity_type_id
+        description: "1 or 2"
+      - name: activity_type_name
+        description: "name"
+      - name: first_activity_time
+        description: "first time"
+      - name: activity_month
+        description: "month"
+  
+  - name: int_deal_funnel_entries
+    description: "Combines stage entries and activity entries into one view"
+    columns:
+      - name: deal_id
+        description: "deal id"
+      - name: funnel_step
+        description: "step number"
+      - name: entry_date
+        description: "month"
+      - name: entry_type
+        description: "stage or activity"
+      - name: kpi_name
+        description: "kpi name"
+  
+  - name: rep_sales_funnel_monthly
+    description: "Monthly funnel report - counts deals by step and month"
+    columns:
+      - name: month
+        description: "month"
+      - name: kpi_name
+        description: "kpi name"
+      - name: funnel_step
+        description: "step"
+      - name: deals_count
+        description: "count of deals"
