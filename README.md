@@ -1070,7 +1070,6 @@ enpal_dbt_assessment/
 
 ## Documentation
 
-- **Architecture Details**: See [`analysis/ARCHITECTURE.md`](analysis/ARCHITECTURE.md) for comprehensive architecture documentation with detailed layer breakdowns
 - **Notebook Documentation**: See [`analysis/README.md`](analysis/README.md) for notebook usage and setup
 - **High-Level Architecture**: See [`ARCHITECTURE.md`](ARCHITECTURE.md) for project-level architecture overview
 - **dbt Documentation**: Generate and view interactive documentation with:
