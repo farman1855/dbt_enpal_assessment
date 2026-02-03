@@ -4,5 +4,110 @@ sources:
   - name: postgres_public
     database: postgres
     schema: public
+    description: "Source tables from Pipedrive CRM - contains deal stages, activities, and change history"
+    
     tables:
+      - name: stages
+        description: "Sales funnel stages - 9 stages from Lead Generation to Renewal"
+        columns:
+          - name: stage_id
+            description: "stage id 1-9"
+            tests:
+              - not_null
+              - unique
+          - name: stage_name
+            description: "stage name"
+            tests:
+              - not_null
+      
+      - name: activity_types
+        description: "Activity type lookup - Sales Call 1, Sales Call 2, etc."
+        columns:
+          - name: id
+            description: "id"
+            tests:
+              - not_null
+              - unique
+          - name: name
+            description: "name"
+            tests:
+              - not_null
+          - name: active
+            description: "is active"
+          - name: type
+            description: "type code"
+      
       - name: activity
+        description: "Activities on deals - calls, meetings, etc."
+        columns:
+          - name: activity_id
+            description: "activity id"
+          - name: type
+            description: "type code"
+          - name: assigned_to_user
+            description: "user id"
+          - name: deal_id
+            description: "deal id"
+            tests:
+              - relationships:
+                  arguments:
+                    to: source('postgres_public', 'deal_changes')
+                    field: deal_id
+                    where: "changed_field_key = 'stage_id'"
+          - name: done
+            description: "is done"
+          - name: due_to
+            description: "due date"
+      
+      - name: deal_changes
+        description: "Historical changes to deals - tracks stage transitions, user changes, etc."
+        columns:
+          - name: deal_id
+            description: "deal id"
+            tests:
+              - not_null
+          - name: change_time
+            description: "when changed"
+            tests:
+              - not_null
+          - name: changed_field_key
+            description: "field that changed"
+            tests:
+              - not_null
+              - accepted_values:
+                  arguments:
+                    values: ['stage_id', 'user_id', 'add_time', 'lost_reason']
+          - name: new_value
+            description: "new value (varchar)"
+      
+      - name: fields
+        description: "Field metadata - contains stage options and lost reason options in JSONB"
+        columns:
+          - name: ID
+            description: "id"
+            tests:
+              - not_null
+              - unique
+          - name: FIELD_KEY
+            description: "field key"
+          - name: NAME
+            description: "name"
+          - name: FIELD_VALUE_OPTIONS
+            description: "jsonb options"
+      
+      - name: users
+        description: "Sales reps/users in Pipedrive"
+        columns:
+          - name: id
+            description: "user id"
+            tests:
+              - not_null
+              - unique
+          - name: name
+            description: "name"
+            tests:
+              - not_null
+          - name: email
+            description: "email"
+          - name: modified
+            description: "modified timestamp"
